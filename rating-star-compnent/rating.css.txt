@@ -1,0 +1,7 @@
+/* Rating Css */
+.starWidth {
+  width: 18px;
+}
+.starHeight {
+  height: 17px;
+}

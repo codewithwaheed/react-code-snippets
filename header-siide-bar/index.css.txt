@@ -1,0 +1,81 @@
+/* Button Css */
+.navaBarButton {
+  position: relative;
+  transform: translateZ(100px);
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  width: 43px;
+  padding: 10px;
+
+  cursor: pointer;
+  background-color: transparent;
+  border: none;
+}
+.navaBarButton:hover {
+  transform: scale(1.2);
+}
+.navBarLine {
+  display: block;
+  height: 2.5px;
+  width: 100%;
+  background-color: #404041;
+  margin-bottom: 4px;
+  border-radius: 2px;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+    opacity 0.2s ease-out;
+  transform: translateZ(0);
+}
+.navBarLineWhite {
+  background-color: #fff !important;
+}
+
+.activeSideBar {
+  position: fixed;
+  z-index: 500;
+  top: 20px;
+}
+.activeSideBar > .navBarLine1,
+.activeSideBar:hover > .navBarLine1 {
+  transform: translateY(6px) rotateZ(-135deg);
+  background-color: #000 !important;
+}
+.activeSideBar > .navBarLine2,
+.activeSideBar:hover > .navBarLine2 {
+  opacity: 0;
+}
+.activeSideBar > .navBarLine3,
+.activeSideBar:hover > .navBarLine3 {
+  transform: translateY(-6px) rotateZ(135deg);
+  background-color: #000 !important;
+}
+/* Button Css Ends */
+.headerSideBar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  height: auto;
+  min-width: 320px;
+  width: 100%;
+  transform: translateX(-100vw);
+  transition-delay: 0.6s;
+  -webkit-transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+  z-index: 490;
+  background-color: #fff;
+}
+.headerSideBarActive {
+  transform: translateX(0);
+}
+.sideBarItem {
+  color: #404041;
+  font-family: poppins;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+.sideBarItemDiv {
+  padding: 20vw 10vw;
+}

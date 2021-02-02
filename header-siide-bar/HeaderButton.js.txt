@@ -1,0 +1,45 @@
+ 
+      {/* SideBarActive */}
+
+      // state
+  state = { active: false };
+
+  // handle Active
+  handleActive = () => {
+    this.setState({
+      active: !this.state.active,
+    });
+  };
+
+  // close sidebar
+  closeSideBar = () => {
+    this.setState({
+      active: false,
+    });
+  };
+        
+         {/* HeaderSideBar Component*/}
+           <HeaderMobileSidebar
+            activeSideBar={active}
+            closeSideBar={this.closeSideBar}
+          />
+        
+       {/* SideBarButton */}
+       <div className="d-inline d-md-none">
+            <button
+              onClick={this.handleActive}
+              className={
+                active ? " navaBarButton activeSideBar " : "navaBarButton"
+              }
+            >
+              <div
+                className="navBarLine navBarLine1"
+              ></div>
+              <div
+                className="navBarLine navBarLine2"
+              ></div>
+              <div
+                className="navBarLine navBarLine3"
+              ></div>
+            </button>
+          </div>
