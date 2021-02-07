@@ -1,0 +1,278 @@
+import React, { Component } from "react";
+import {
+  addDays,
+  addMonths,
+  subMonths,
+  isEqual,
+  startOfWeek,
+  endOfWeek,
+  startOfMonth,
+  endOfMonth,
+  isSameDay,
+  parse,
+  isSameMonth,
+  subWeeks,
+  addWeeks,
+  format as formateDate,
+} from "date-fns";
+export default class CalendarUpcomingClasses extends Component {
+  // component did mount
+  componentDidMount() {
+    const { todayDate, selectedDate } = this.state;
+    //    setting date hours to 00:00:00
+    var todayDateZ = todayDate.setHours(0, 0, 0, 0);
+    var selectedDateZ = selectedDate.setHours(0, 0, 0, 0);
+    this.setState({
+      todayDate: todayDateZ,
+      selectedDate: selectedDateZ,
+    });
+  }
+
+  constructor() {
+    super();
+    // state
+    this.state = {
+      currentMonth: new Date(),
+      selectedDate: new Date(),
+      todayDate: new Date(),
+      currentWeek: new Date(),
+      activeWeek: true,
+    };
+  }
+  // handle active
+  handleActiveWeek = () => {
+    this.setState({
+      activeWeek: !this.state.activeWeek,
+    });
+  };
+  //   onClick of Week Days
+  onDateWeekClick = (day) => {
+    this.setState({
+      selectedDate: day,
+    });
+  };
+  // handgle change in month or weeks
+  nextMonth = () => {
+    this.setState({
+      currentMonth: addMonths(this.state.currentMonth, 1),
+    });
+  };
+
+  prevMonth = () => {
+    this.setState({
+      currentMonth: subMonths(this.state.currentMonth, 1),
+    });
+  };
+  nextWeek = () => {
+    this.setState({
+      currentWeek: addWeeks(this.state.currentWeek, 1),
+    });
+  };
+
+  prevWeek = () => {
+    this.setState({
+      currentWeek: subWeeks(this.state.currentWeek, 1),
+    });
+  };
+
+  //   render days of current week
+  renderDaysInWeek = () => {
+    const { selectedDate, todayDate, currentWeek } = this.state;
+    var StartOfWeekDate = startOfWeek(currentWeek.setHours(0, 0, 0, 0));
+
+    var month = formateDate(StartOfWeekDate, "LLL");
+
+    var currentDate = addDays(StartOfWeekDate, 1);
+    const weekArr = [1, 2, 3, 4, 5, 6, 7];
+    return (
+      <div className="daysInWeekDiv">
+        {weekArr.map((item, index) => {
+          if (index >= 1) currentDate = addDays(currentDate, 1);
+          var date = formateDate(currentDate, "d");
+          var day = formateDate(currentDate, "ccccc");
+
+          return (
+            <DaysInWeekItem
+              key={index}
+              fullDate={currentDate}
+              month={month}
+              date={date}
+              day={day}
+              isToday={isEqual(todayDate, currentDate)}
+              active={isEqual(selectedDate, currentDate)}
+              onDateClick={this.onDateWeekClick}
+            />
+          );
+        })}
+      </div>
+    );
+  };
+  // render current month calender
+  renderDaysInMonth = () => {
+    const { currentMonth, selectedDate, todayDate } = this.state;
+    const monthStart = startOfMonth(currentMonth);
+    const monthEnd = endOfMonth(monthStart);
+    const startDate = startOfWeek(monthStart);
+    const endDate = endOfWeek(monthEnd);
+    const monthName = formateDate(currentMonth, "LLLL");
+    const dateFormat = "d";
+    const rows = [];
+    let days = [];
+    let day = startDate;
+    let formattedDate = "";
+
+    while (day <= endDate) {
+      for (let i = 0; i < 7; i++) {
+        formattedDate = formateDate(day, dateFormat);
+        const cloneDay = day;
+        days.push(
+          <div
+            className={`calenderItem ${
+              !isSameMonth(day, monthStart)
+                ? "calenderItemDisable"
+                : isSameDay(day, selectedDate)
+                ? "calenderItemActive"
+                : isSameDay(day, todayDate)
+                ? "calenderItemToday"
+                : ""
+            }`}
+            key={day}
+            onClick={() => this.onDateWeekClick(cloneDay)}
+          >
+            {formattedDate}
+          </div>
+        );
+        day = addDays(day, 1);
+      }
+      rows.push(
+        <div className="calenderRow" key={day}>
+          {days}
+        </div>
+      );
+      days = [];
+    }
+    return (
+      <div className="calenderContainer">
+        <div className="title pt-1 pb-0">{monthName}</div>
+        <div className="calenderRow">
+          <div className="calenderCol">M</div>
+          <div className="calenderCol">T</div>
+          <div className="calenderCol">W</div>
+          <div className="calenderCol">T</div>
+          <div className="calenderCol">F</div>
+          <div className="calenderCol">S</div>
+          <div className="calenderCol">S</div>
+        </div>
+        {rows};
+      </div>
+    );
+  };
+
+  //   render Controllers
+  renderController = () => {
+    const { activeWeek } = this.state;
+    if (activeWeek) {
+      return (
+        <div className="dateControllerDiv">
+          <span>Today</span>
+          <div className="ml-3">
+            <img
+              onClick={this.prevWeek}
+              src="/images/arrowLeft.png"
+              className="dateControllerBtn"
+              alt="dateControllerBtn"
+            ></img>
+            <img
+              onClick={this.nextWeek}
+              src="/images/arrowRight.png"
+              className="dateControllerBtn"
+              alt="dateControllerBtn"
+            ></img>
+          </div>
+        </div>
+      );
+    } else {
+      return (
+        <div className="dateControllerDiv">
+          <span>Today</span>
+          <div className="ml-3">
+            <img
+              onClick={this.prevMonth}
+              src="/images/arrowLeft.png"
+              className="dateControllerBtn"
+              alt="dateControllerBtn"
+            ></img>
+            <img
+              onClick={this.nextMonth}
+              src="/images/arrowRight.png"
+              className="dateControllerBtn"
+              alt="dateControllerBtn"
+            ></img>
+          </div>
+        </div>
+      );
+    }
+  };
+
+  //   main render
+  render() {
+    const { activeWeek } = this.state;
+    return (
+      <div>
+        <div className="flexSpaceBetweenCenter controller">
+          {this.renderController()}
+          <div className="weekController">
+            <div
+              onClick={this.handleActiveWeek}
+              className={activeWeek ? "item itemActive" : "item"}
+            >
+              <span className="d-inline d-md-none">W</span>
+              <span className="d-none d-md-inline">Week</span>
+            </div>
+            <div
+              onClick={this.handleActiveWeek}
+              className={activeWeek ? "item " : "item itemActive"}
+            >
+              <span className="d-inline d-md-none">M</span>
+              <span className="d-none d-md-inline">Month</span>
+            </div>
+          </div>
+        </div>
+
+        {activeWeek === true
+          ? this.renderDaysInWeek()
+          : this.renderDaysInMonth()}
+      </div>
+    );
+  }
+}
+
+// week days item component
+const DaysInWeekItem = ({
+  month,
+  date,
+  day,
+  isToday,
+  active,
+  onDateClick,
+  fullDate,
+}) => {
+  const itemClass = () => {
+    var className = "daysInWeekDivItem";
+
+    if (isToday) {
+      className = "daysInWeekDivItem daysInWeekDivItemToday";
+    }
+    if (active) className = " daysInWeekDivItem  daysInWeekDivItemActive ";
+
+    return className;
+  };
+
+  return (
+    <div onClick={() => onDateClick(fullDate)} className={itemClass()}>
+      <div className="text">{month}</div>
+      <div className="dateText">{date}</div>
+      <div className="text">{day}</div>
+    </div>
+  );
+};
